@@ -1,39 +1,49 @@
-import dotenv from "dotenv";
-import path from "path";
 import { google } from "googleapis";
 import type { ContactFormData } from "../types/contact.js";
 
-dotenv.config({
-  path: path.resolve(process.cwd(), ".env"),
-});
-
+// ENV VARIABLES (Render / Production)
 const sheetId = process.env.GOOGLE_SHEET_ID;
-const credentialsPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
 
+const projectId = process.env.GOOGLE_PROJECT_ID;
+const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
+const privateKey = process.env.GOOGLE_PRIVATE_KEY;
+
+// Debug (safe for production logs)
 console.log("ENV CHECK:", {
-  sheetId,
-  credentialsPath,
-  cwd: process.cwd(),
+  sheetId: !!sheetId,
+  projectId: !!projectId,
+  clientEmail: !!clientEmail,
+  privateKey: !!privateKey,
 });
 
 if (!sheetId) {
-  throw new Error("GOOGLE_SHEET_ID is missing in .env");
+  throw new Error("GOOGLE_SHEET_ID is missing");
 }
 
-if (!credentialsPath) {
-  throw new Error("GOOGLE_APPLICATION_CREDENTIALS is missing in .env");
+if (!projectId || !clientEmail || !privateKey) {
+  throw new Error("Google credentials env variables are missing");
 }
 
+// FIX PRIVATE KEY FORMAT (CRITICAL)
+const formattedPrivateKey = privateKey.replace(/\\n/g, "\n");
+
+// AUTH (NO FILES USED)
 const auth = new google.auth.GoogleAuth({
-  keyFile: path.resolve(process.cwd(), credentialsPath),
+  credentials: {
+    project_id: projectId,
+    client_email: clientEmail,
+    private_key: formattedPrivateKey,
+  },
   scopes: ["https://www.googleapis.com/auth/spreadsheets"],
 });
 
+// GOOGLE SHEETS CLIENT
 const sheets = google.sheets({
   version: "v4",
   auth,
 });
 
+// APPEND FUNCTION
 export async function appendContactToSheet(data: ContactFormData) {
   const submittedAt = new Date().toLocaleString("en-NP", {
     timeZone: "Asia/Kathmandu",
