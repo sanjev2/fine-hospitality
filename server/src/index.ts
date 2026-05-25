@@ -9,14 +9,32 @@ import contactRoutes from "./routes/contact.routes";
 const app = express();
 
 const PORT = Number(process.env.PORT) || 5000;
-const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
+
+// --------------------
+// ALLOWED FRONTEND DOMAINS
+// --------------------
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://finehospitalitytraining.com",
+  "https://www.finehospitalitytraining.com",
+  "https://fine-hospitality-4311lnrpy.vercel.app",
+];
 
 // --------------------
 // CORS
 // --------------------
 app.use(
   cors({
-    origin: CLIENT_URL,
+    origin: (origin, callback) => {
+      // allow requests with no origin
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
@@ -45,5 +63,5 @@ app.use("/api/contact", contactRoutes);
 // START SERVER
 // --------------------
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
