@@ -1,6 +1,6 @@
 import express from "express";
-import { appendContactToSheet } from "../services/googleSheets.service.js";
-import type { ContactFormData } from "../types/contact.js";
+import { appendContactToSheet } from "../services/googleSheets.service";
+import type { ContactFormData } from "../types/contact";
 
 const router = express.Router();
 

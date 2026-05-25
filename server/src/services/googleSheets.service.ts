@@ -1,5 +1,5 @@
 import { google } from "googleapis";
-import type { ContactFormData } from "../types/contact.js";
+import type { ContactFormData } from "../types/contact";
 
 // ENV VARIABLES (Render / Production)
 const sheetId = process.env.GOOGLE_SHEET_ID;
