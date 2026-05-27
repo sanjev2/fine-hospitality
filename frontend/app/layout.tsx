@@ -17,6 +17,9 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Fine Hospitality Group",
+  icons: {
+    icon: "/icon.png",
+  },
   description:
     "Luxury Barista + Bartending Academy in Kathmandu",
 };
@@ -39,3 +42,4 @@ export default function RootLayout({
     </html>
   );
 }
+
